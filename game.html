@@ -19,102 +19,113 @@
 </head>
 <body>
   <canvas id="gameCanvas" width="700" height="700"></canvas>
-
   <script>
-   const canvas = document.getElementById('gameCanvas');
+const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Player object
 const player = {
-  x: 300,
-  y: 300,
+  x: 350,
+  y: 350,
   radius: 11,
   speed: 8
 };
-// Star
+
 const star = {
   x: Math.random() * 660 + 20,
   y: Math.random() * 660 + 20,
   radius: 10
 };
+
 const blackhole = {
   x: Math.random() * 660 + 20,
   y: Math.random() * 660 + 20,
   radius: 12
 };
+
 let score = 0;
 let gameOver = false;
 
-// Track which keys are pressed
 const keys = {};
 document.addEventListener('keydown', e => keys[e.key] = true);
 document.addEventListener('keyup', e => keys[e.key] = false);
 
-// Game loop
-function gameLoop() {ctx.clearRect(0, 0, canvas.width, canvas.height);
+document.addEventListener('keydown', e => {
+  if (e.key === 'r' || e.key === 'R') {
+    if (gameOver) {
+      player.x = 350;
+      player.y = 350;
+      score = 0;
+      gameOver = false;
+      star.x = Math.random() * 660 + 20;
+      star.y = Math.random() * 660 + 20;
+      blackhole.x = Math.random() * 660 + 20;
+      blackhole.y = Math.random() * 660 + 20;
+      gameLoop();
+    }
+  }
+});
 
-if (gameOver) {
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "40px Courier New";
-  ctx.fillText("GAME OVER", 170, 280);
-
-  ctx.font = "20px Courier New";
-  ctx.fillText("Final Score: " + score, 220, 320);
-  return;
- }
-  // Clear the canvas
+function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Move player based on keys
+  if (gameOver) {
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "40px Courier New";
+    ctx.fillText("GAME OVER", 170, 280);
+    ctx.font = "20px Courier New";
+    ctx.fillText("Final Score: " + score, 220, 320);
+    ctx.fillText("Press R to restart", 220, 360);
+    return;
+  }
+
   if (keys['ArrowUp'])    player.y -= player.speed;
   if (keys['ArrowDown'])  player.y += player.speed;
   if (keys['ArrowLeft'])  player.x -= player.speed;
   if (keys['ArrowRight']) player.x += player.speed;
 
-  // Draw player
+  if (player.x < player.radius) player.x = player.radius;
+  if (player.x > 700 - player.radius) player.x = 700 - player.radius;
+  if (player.y < player.radius) player.y = player.radius;
+  if (player.y > 700 - player.radius) player.y = 700 - player.radius;
+
   ctx.beginPath();
   ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
   ctx.fillStyle = '#ffffff';
   ctx.fill();
 
-  // Call gameLoop again next frame
-  
- // Draw star
- ctx.beginPath();
- ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
- ctx.fillStyle = '#FFD700';
- ctx.fill();
+  ctx.beginPath();
+  ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+  ctx.fillStyle = '#FFD700';
+  ctx.fill();
 
- ctx.beginPath();
- ctx.arc(blackhole.x, blackhole.y, blackhole.radius, 0, Math.PI * 2);
- ctx.fillStyle = '#9b59b6';
- ctx.fill();
+  ctx.beginPath();
+  ctx.arc(blackhole.x, blackhole.y, blackhole.radius, 0, Math.PI * 2);
+  ctx.fillStyle = '#9b59b6';
+  ctx.fill();
 
- // Check if player touches star
- const dx = player.x - star.x;
- const dy = player.y - star.y;
- const distance = Math.sqrt(dx * dx + dy * dy);
+  const dx = player.x - star.x;
+  const dy = player.y - star.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
 
- // Check if player touches black hole
- const bhdx = player.x - blackhole.x;
- const bhdy = player.y - blackhole.y;
- const bhDistance = Math.sqrt(bhdx * bhdx + bhdy * bhdy);
+  const bhdx = player.x - blackhole.x;
+  const bhdy = player.y - blackhole.y;
+  const bhDistance = Math.sqrt(bhdx * bhdx + bhdy * bhdy);
 
- if (bhDistance < player.radius + blackhole.radius) {
-  gameOver = true;
- }
+  if (bhDistance < player.radius + blackhole.radius) {
+    gameOver = true;
+  }
 
- if (distance < player.radius + star.radius) {
-  score++;
-  star.x = Math.random() * 660 + 20;
-  star.y = Math.random() * 660 + 20;
- }
+  if (distance < player.radius + star.radius) {
+    score++;
+    star.x = Math.random() * 660 + 20;
+    star.y = Math.random() * 660 + 20;
+  }
 
- // Draw score
- ctx.fillStyle = '#ffffff';
- ctx.font = '16px Courier New';
- ctx.fillText('score: ' + score, 16, 24);
- requestAnimationFrame(gameLoop);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '16px Courier New';
+  ctx.fillText('score: ' + score, 16, 24);
+
+  requestAnimationFrame(gameLoop);
 }
 
 gameLoop();
