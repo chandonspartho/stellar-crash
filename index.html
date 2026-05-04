@@ -33,7 +33,7 @@
 </head>
 <body>
   <div id="exit-btn" onclick="window.location.href='https://chandonspartho.github.io/arkedx'">✕ exit</div>
-  <canvas id="gameCanvas" width="700" height="700"></canvas>
+  <canvas id="gameCanvas" width="650" height="650"></canvas>
   <script>
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
@@ -46,14 +46,14 @@ const player = {
 };
 
 const star = {
-  x: Math.random() * 660 + 20,
-  y: Math.random() * 660 + 20,
+  x: Math.random() * 610 + 20,
+  y: Math.random() * 610 + 20,
   radius: 10
 };
 
 const blackhole = {
-  x: Math.random() * 660 + 20,
-  y: Math.random() * 660 + 20,
+  x: Math.random() * 610 + 20,
+  y: Math.random() * 610 + 20,
   radius: 12
 };
 
@@ -71,10 +71,10 @@ document.addEventListener('keydown', e => {
       player.y = 350;
       score = 0;
       gameOver = false;
-      star.x = Math.random() * 660 + 20;
-      star.y = Math.random() * 660 + 20;
-      blackhole.x = Math.random() * 660 + 20;
-      blackhole.y = Math.random() * 660 + 20;
+      star.x = Math.random() * 610 + 20;
+      star.y = Math.random() * 610 + 20;
+      blackhole.x = Math.random() * 610 + 20;
+      blackhole.y = Math.random() * 610 + 20;
       gameLoop();
     }
   }
@@ -99,9 +99,9 @@ function gameLoop() {
   if (keys['ArrowRight']) player.x += player.speed;
 
   if (player.x < player.radius) player.x = player.radius;
-  if (player.x > 700 - player.radius) player.x = 700 - player.radius;
+  if (player.x > 650 - player.radius) player.x = 650 - player.radius;
   if (player.y < player.radius) player.y = player.radius;
-  if (player.y > 700 - player.radius) player.y = 700 - player.radius;
+  if (player.y > 650 - player.radius) player.y = 650 - player.radius;
 
   ctx.beginPath();
   ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
@@ -132,8 +132,8 @@ function gameLoop() {
 
   if (distance < player.radius + star.radius) {
     score++;
-    star.x = Math.random() * 660 + 20;
-    star.y = Math.random() * 660 + 20;
+    star.x = Math.random() * 610 + 20;
+    star.y = Math.random() * 610 + 20;
   }
 
   ctx.fillStyle = '#ffffff';
