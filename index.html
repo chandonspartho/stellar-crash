@@ -15,16 +15,16 @@
     canvas {
       border: 1px solid #222;
     }
-  #exit-btn {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    color: #ffffff;
-    font-family: 'Courier New', monospace;
-    font-size: 16px;
-    letter-spacing: 2px;
-    cursor: pointer;
-    transition: opacity 0.2s;
+    #exit-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      color: #ffffff;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: opacity 0.2s;
     }
     #exit-btn:hover {
       color: #ffffff;
@@ -61,6 +61,7 @@ const blackhole = {
 let score = 0;
 let gameOver = false;
 let hunger = 100;
+let horizonCooldown = 0;
 
 const keys = {};
 document.addEventListener('keydown', e => keys[e.key] = true);
@@ -73,6 +74,7 @@ document.addEventListener('keydown', e => {
       player.y = 350;
       score = 0;
       hunger = 100;
+      horizonCooldown = 0;
       gameOver = false;
       star.x = Math.random() * 610 + 20;
       star.y = Math.random() * 610 + 20;
@@ -95,11 +97,13 @@ function gameLoop() {
     ctx.fillText("Press R to restart", 220, 360);
     return;
   }
-     hunger -= 0.15;
-     if (hunger <= 0) {
-        hunger = 0;
-     gameOver = true;
+
+  hunger -= 0.15;
+  if (hunger <= 0) {
+    hunger = 0;
+    gameOver = true;
   }
+
   if (keys['ArrowUp'])    player.y -= player.speed;
   if (keys['ArrowDown'])  player.y += player.speed;
   if (keys['ArrowLeft'])  player.x -= player.speed;
@@ -136,28 +140,32 @@ function gameLoop() {
   if (bhDistance < player.radius + blackhole.radius) {
     gameOver = true;
   } else if (bhDistance < blackhole.horizon) {
-  score -= 1;
-  hunger -= 5;
-  if (score < 0) score = 0;
-  if (hunger < 0) hunger = 0;
+    if (horizonCooldown <= 0) {
+      score -= 1;
+      hunger -= 20;
+      if (score < 0) score = 0;
+      if (hunger < 0) hunger = 0;
+      horizonCooldown = 30;
+    }
   }
 
+  if (horizonCooldown > 0) horizonCooldown--;
+
   if (distance < player.radius + star.radius) {
-  score++;
-  hunger += 20;
-  if (hunger > 100) hunger = 100;
-  star.x = Math.random() * 610 + 20;
-  star.y = Math.random() * 610 + 20;
-}
+    score++;
+    hunger += 20;
+    if (hunger > 100) hunger = 100;
+    star.x = Math.random() * 610 + 20;
+    star.y = Math.random() * 610 + 20;
+  }
 
   ctx.fillStyle = '#ffffff';
   ctx.font = '16px Courier New';
   ctx.fillText('score: ' + score, 16, 24);
-  // Hunger bar background
+
   ctx.fillStyle = '#222';
   ctx.fillRect(16, 40, 150, 10);
 
-// Hunger bar fill
   ctx.fillStyle = hunger > 30 ? '#4ade80' : '#ff4444';
   ctx.fillRect(16, 40, 1.5 * hunger, 10);
 
@@ -168,4 +176,3 @@ gameLoop();
   </script>
 </body>
 </html>
- 
