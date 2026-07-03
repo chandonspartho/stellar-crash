@@ -55,6 +55,7 @@ const blackhole = {
   x: Math.random() * 610 + 20,
   y: Math.random() * 610 + 20,
   radius: 12
+  horizon: 40
 };
 
 let score = 0;
@@ -135,6 +136,12 @@ function gameLoop() {
   if (bhDistance < player.radius + blackhole.radius) {
     gameOver = true;
   }
+  } else if (bhDistance < blackhole.horizon) {
+  score -= 1;
+  hunger -= 20;
+  if (score < 0) score = 0;
+  if (hunger < 0) hunger = 0;
+}
 
   if (distance < player.radius + star.radius) {
   score++;
