@@ -59,6 +59,7 @@ const blackhole = {
 
 let score = 0;
 let gameOver = false;
+let hunger = 100;
 
 const keys = {};
 document.addEventListener('keydown', e => keys[e.key] = true);
@@ -70,6 +71,7 @@ document.addEventListener('keydown', e => {
       player.x = 350;
       player.y = 350;
       score = 0;
+      hunger = 100;
       gameOver = false;
       star.x = Math.random() * 610 + 20;
       star.y = Math.random() * 610 + 20;
@@ -92,7 +94,11 @@ function gameLoop() {
     ctx.fillText("Press R to restart", 220, 360);
     return;
   }
-
+     hunger -= 0.15;
+     if (hunger <= 0) {
+        hunger = 0;
+     gameOver = true;
+  }
   if (keys['ArrowUp'])    player.y -= player.speed;
   if (keys['ArrowDown'])  player.y += player.speed;
   if (keys['ArrowLeft'])  player.x -= player.speed;
@@ -131,14 +137,23 @@ function gameLoop() {
   }
 
   if (distance < player.radius + star.radius) {
-    score++;
-    star.x = Math.random() * 610 + 20;
-    star.y = Math.random() * 610 + 20;
-  }
+  score++;
+  hunger += 20;
+  if (hunger > 100) hunger = 100;
+  star.x = Math.random() * 610 + 20;
+  star.y = Math.random() * 610 + 20;
+}
 
   ctx.fillStyle = '#ffffff';
   ctx.font = '16px Courier New';
   ctx.fillText('score: ' + score, 16, 24);
+  // Hunger bar background
+  ctx.fillStyle = '#222';
+  ctx.fillRect(16, 40, 150, 10);
+
+// Hunger bar fill
+  ctx.fillStyle = hunger > 30 ? '#4ade80' : '#ff4444';
+  ctx.fillRect(16, 40, 1.5 * hunger, 10);
 
   requestAnimationFrame(gameLoop);
 }
